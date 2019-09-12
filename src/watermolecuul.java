@@ -63,7 +63,6 @@ public class watermolecuul extends JFrame implements ActionListener {
     private void drawthing(int x, int y) {
         int widthO = 60;
         int withH = 30;
-        System.out.println(x + y);
         Graphics paper = panel.getGraphics();
         panel.update(paper);
         paper.drawLine(x + 25, y + 75, x + 100, y + 15);
