@@ -2,24 +2,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class TicTacToe extends JFrame implements ActionListener {
     private int[] ticked = {0, 0, 0, 0, 0, 0, 0, 0, 0};
     private JButton[] buttons = new JButton[9];
-    private int player = 1;
+    private static int player = 1;
     private int moves = 0;
+    private static TicTacToe frame = new TicTacToe();
+    private boolean opnieuw = false;
 
 
     public static void main(String[] args) {
-        TicTacToe frame = new TicTacToe();
+        ImageIcon img = new ImageIcon("C:\\Users\\armin\\IdeaProjects\\Unclassified\\out\\production\\Unclassified\\star_3d_6814876.jpg");
+        frame.setIconImage(img.getImage());
         frame.setSize(500, 500);
+        String playerstr = String.format("player %s is aan de beurt", player);
+        frame.setTitle(playerstr);
         frame.creategui();
         frame.setVisible(true);
-
     }
 
     private void creategui() {
-
         Container window = getContentPane();
         window.setLayout(new GridLayout(3, 3));
         for (int i = 0; i < 9; i++) {
@@ -32,8 +37,6 @@ public class TicTacToe extends JFrame implements ActionListener {
             buttons[i].addActionListener(this);
         }
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-
     }
 
     @Override
@@ -48,6 +51,11 @@ public class TicTacToe extends JFrame implements ActionListener {
                         windialog();
                     }
                     player = 2;
+                    String playerstr = String.format("player %s is aan de beurt", player);
+
+                    frame.setTitle(playerstr);
+
+
                 }
             } else {
                 if (e.getSource() == buttons[i]) {
@@ -58,6 +66,10 @@ public class TicTacToe extends JFrame implements ActionListener {
                         windialog();
                     }
                     player = 1;
+                    String playerstr = String.format("player %s is aan de beurt", player);
+
+                    frame.setTitle(playerstr);
+
                 }
             }
         }
@@ -84,7 +96,7 @@ public class TicTacToe extends JFrame implements ActionListener {
             if (ticked[2] == i && ticked[5] == i && ticked[8] == i) {
                 return true;
             }
-            if (ticked[0] == 1 && ticked[4] == i && ticked[8] == i) {
+            if (ticked[0] == i && ticked[4] == i && ticked[8] == i) {
                 return true;
             }
             if (ticked[2] == i && ticked[4] == i && ticked[6] == i) {
@@ -100,22 +112,48 @@ public class TicTacToe extends JFrame implements ActionListener {
 
     private void windialog() {
         JDialog winnaar = new JDialog();
-        JLabel text = new JLabel("speler " + player + " heeft gewonnen");
-        winnaar.setSize(160, 100);
-        text.setLocation(20,50);
+        JLabel text = new JLabel("speler " + player + " heeft gewonnen!!");
+        winnaar.setSize(180, 100);
+        text.setLocation(20, 50);
         winnaar.add(text);
         winnaar.setVisible(true);
+        winnaar.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                reset();
+            }
+        });
     }
 
     private void enddialog() {
         JDialog end = new JDialog();
         JLabel text = new JLabel("game over!");
-        text.setLocation(20,50);
+        text.setLocation(20, 50);
         end.add(text);
-        end.setSize(160, 100);
+        end.setSize(180, 100);
         end.setVisible(true);
+        end.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                reset();
+            }
+        });
     }
 
+
+
+    private void reset() {
+        player = 1;
+
+        String playerstr = String.format("player %s is aan de beurt", player);
+
+        frame.setTitle(playerstr);
+
+        for (int i = 0; i < 9; i++) {
+            ticked[i] = 0;
+            moves = 0;
+            buttons[i].setEnabled(true);
+            buttons[i].setBackground(null);
+        }
+    }
 }
-
-
