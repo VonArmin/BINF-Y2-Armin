@@ -1,3 +1,5 @@
+package Afvinkopgave1;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -22,7 +24,7 @@ public class demo extends JFrame implements ActionListener {
         Container window = getContentPane();
         window.setLayout(new FlowLayout());
         window.setBackground(Color.green);
-        textfield = new JTextField("Hello world");
+        textfield = new JTextField("Afvinkopgave1.Hello world");
         button = new JButton("text");
         panel = new JPanel();
         panel.setPreferredSize(new Dimension( 100,100));

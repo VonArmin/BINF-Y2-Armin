@@ -1,9 +1,12 @@
+package Afvinkopgave3;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 
 public class TicTacToe extends JFrame implements ActionListener {
     private int[] ticked = {0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -11,7 +14,6 @@ public class TicTacToe extends JFrame implements ActionListener {
     private static int player = 1;
     private int moves = 0;
     private static TicTacToe frame = new TicTacToe();
-    private boolean opnieuw = false;
 
 
     public static void main(String[] args) {
@@ -31,16 +33,19 @@ public class TicTacToe extends JFrame implements ActionListener {
             if (ticked[i] == 0) {
                 buttons[i] = new JButton();
                 window.add(buttons[i]);
+                buttons[i].addActionListener(this);
             }
         }
-        for (int i = 0; i < 9; i++) {
-            buttons[i].addActionListener(this);
-        }
+        System.out.println(Arrays.toString(ticked));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        clicked(e);
+    }
+
+    private void clicked(ActionEvent e) {
         for (int i = 0; i < 9; i++) {
             if (player == 1) {
                 if (e.getSource() == buttons[i]) {
@@ -141,17 +146,13 @@ public class TicTacToe extends JFrame implements ActionListener {
     }
 
 
-
     private void reset() {
         player = 1;
-
+        moves = 0;
         String playerstr = String.format("player %s is aan de beurt", player);
-
         frame.setTitle(playerstr);
-
         for (int i = 0; i < 9; i++) {
             ticked[i] = 0;
-            moves = 0;
             buttons[i].setEnabled(true);
             buttons[i].setBackground(null);
         }

@@ -1,3 +1,5 @@
+package Afvinkopgave1;
+
 import javax.swing.*;
 
 public class GUI extends JFrame {
