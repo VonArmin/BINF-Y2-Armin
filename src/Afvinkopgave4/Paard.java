@@ -5,29 +5,19 @@ import java.util.Random;
 
 class Paard {
     private int afstand;
-
-    public void setPaardNummer(int paardNummer) {
-        this.paardNummer = paardNummer;
-    }
-
-    private int paardNummer;
-    private static int aantalpaarden = 0;
+    private int overkill;
+    private static int aantalpaarden;
+    private int paardNummer = aantalpaarden;
     private String naam;
     private Color kleur;
-    private Image plaatje;
-    Random random = new Random();
 
-    Paard(String name, Color color) {
-        this.naam = name;
-        this.kleur = color;
-        this.afstand = 4;
-        aantalpaarden++;
-    }
 
     Paard(String name) {
         this.naam = name;
-        this.kleur = Color.green;
+        this.setColor();
+        aantalpaarden++;
     }
+
 
     String getName() {
         return this.naam;
@@ -37,30 +27,42 @@ class Paard {
         return this.afstand;
     }
 
+    int getOverkill(){
+        return overkill;
+    }
+
     Color getColor() {
         return this.kleur;
     }
 
-    Image getImage() {
-        return this.plaatje;
-    }
-
     int getPaardNummer() {
-        return this.paardNummer;
+        return paardNummer;
     }
 
     void setNaam(String naam) {
         this.naam = naam;
     }
 
-    Random getRandom() {
-        return this.random;
+    private void setColor(){
+        this.kleur = new Color(HighRandom(),HighRandom(),HighRandom());
+    }
+
+    private int HighRandom(){
+        return new Random().nextInt(256);
+    }
+
+    private int getRandom() {
+        return new Random().nextInt(50);
+    }
+
+    void run() {
+        afstand += getRandom();
     }
 
     String getinfo() {
-        String streep = "-------------------------------------------";
+        String streep = "-------------------------------------------\n";
         System.out.println(streep);
-        return String.format("%s %s %s %s \n %s", this.naam, this.paardNummer, this.kleur, this.afstand, streep);
+        return String.format("%s %s %s %s \n %s %s", this.naam, paardNummer, this.kleur, this.afstand, this.getRandom(), streep);
     }
 }
 

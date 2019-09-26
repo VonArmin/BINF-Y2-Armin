@@ -60,7 +60,6 @@ public class watermolecuul extends JFrame implements ActionListener {
     }
 
 
-
     private void drawthing(int x, int y) {
         int widthO = 60;
         int withH = 30;
