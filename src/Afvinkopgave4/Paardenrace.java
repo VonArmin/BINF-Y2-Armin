@@ -1,4 +1,3 @@
-package Afvinkopgave4;
 //auteur  : Armin van Eldik
 //nummer  : 618604
 //DOC     : 17-09-2019
@@ -6,13 +5,15 @@ package Afvinkopgave4;
 //klas    : BIN-2B
 //functie : paardenrace spelletje
 
+package Afvinkopgave4;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Paardenrace extends JFrame implements ActionListener {
-    private static int horseamt = 10;
+    private static int horseamt = 5;
     private static Paardenrace frame = new Paardenrace();
     private static Paard[] horse = new Paard[horseamt];
     private static JTextField[] tfield = new JTextField[horseamt];
@@ -36,7 +37,7 @@ public class Paardenrace extends JFrame implements ActionListener {
         window.setBackground(new Color(160, 160, 160));
         for (int i = 0; i < horseamt; i++) {
             tfield[i] = new JTextField(5);
-            tfield[i].setText("paard " + i);
+            tfield[i].setText("paard " + (i + 1));
             window.add(tfield[i]);
             tfield[i].setBounds(0, 15 + i * 30, 60, 18);
         }

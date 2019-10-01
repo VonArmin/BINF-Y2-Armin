@@ -5,7 +5,6 @@ import java.util.Random;
 
 class Paard {
     private int afstand;
-    private int overkill;
     private static int aantalpaarden;
     private int paardNummer = aantalpaarden;
     private String naam;
@@ -27,10 +26,6 @@ class Paard {
         return this.afstand;
     }
 
-    int getOverkill(){
-        return overkill;
-    }
-
     Color getColor() {
         return this.kleur;
     }
@@ -43,11 +38,11 @@ class Paard {
         this.naam = naam;
     }
 
-    private void setColor(){
-        this.kleur = new Color(HighRandom(),HighRandom(),HighRandom());
+    private void setColor() {
+        this.kleur = new Color(HighRandom(), HighRandom(), HighRandom());
     }
 
-    private int HighRandom(){
+    private int HighRandom() {
         return new Random().nextInt(256);
     }
 
@@ -65,4 +60,3 @@ class Paard {
         return String.format("%s %s %s %s \n %s %s", this.naam, paardNummer, this.kleur, this.afstand, this.getRandom(), streep);
     }
 }
-
