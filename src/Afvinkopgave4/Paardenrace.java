@@ -28,6 +28,7 @@ public class Paardenrace extends JFrame implements ActionListener {
 
 
     private void myGui() {
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         Container window = getContentPane();
         panel = new JPanel();
         panel.setPreferredSize(new Dimension(550, 100 + horseamt * 28));
