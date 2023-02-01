@@ -13,11 +13,11 @@ public class golVisuals extends JFrame implements ActionListener
     private static final Color foregroundCol = new Color(200, 200, 200);
     private static final Border borderStyle = BorderFactory.createLineBorder(Color.BLACK);
     private static final Dimension buttonSize = new Dimension(50, 25);
-    private static final int size = 150;
-    private static final int scale = 5;
+    private static final int size = 100;
+    private static final int scale = 6;
     private static boolean run = false;
-    private static final int delay = 10;
-    private static int speed = 10;
+    private static int speed = 5;
+    private static final int[] speeds = {275, 225, 175, 125, 100, 80, 60, 40, 25, 10};
     private static final JPanel GOLGridPanel = new JPanel();
     private static final golVisuals frame = new golVisuals();
     private static final golGrid game = new golGrid(size);
@@ -29,7 +29,6 @@ public class golVisuals extends JFrame implements ActionListener
     {
         frame.setSize(size * scale + 30, size * scale + 80);
         frame.setTitle("GOL visuals app");
-
         frame.myGui();
         frame.setVisible(true);
     }
@@ -47,7 +46,7 @@ public class golVisuals extends JFrame implements ActionListener
         GOLGridPanel.setPreferredSize(new Dimension(size * (scale), size * (scale)));
         GOLGridPanel.setVisible(true);
         label.setForeground(foregroundCol);
-        label.setText(String.format("Delay: %s", delay * speed));
+        label.setText(String.format("Speed: %s", speed));
 
         for (int row = 0; row < size; row++)
         {
@@ -71,7 +70,7 @@ public class golVisuals extends JFrame implements ActionListener
 
     private void FormatButtons()
     {
-        String[] buttonNames = {"⏯", "⏭", "⏏", "⏪", "⏩", "⏴", "⏺"};
+        String[] buttonNames = {"⏭", "⏯", "⏹", "⏪", "⏩", "⏏", "⏺"};
         for (int i = 0; i < controlButtons.length; i++)
         {
             controlButtons[i] = new JButton();
@@ -81,6 +80,8 @@ public class golVisuals extends JFrame implements ActionListener
             controlButtons[i].setBorder(borderStyle);
             controlButtons[i].setPreferredSize(buttonSize);
             controlButtons[i].setText(buttonNames[i]);
+            controlButtons[i].setFont(new Font(controlButtons[i].getFont().getName(),
+                    controlButtons[i].getFont().getStyle(), 20));
         }
     }
 
@@ -108,70 +109,110 @@ public class golVisuals extends JFrame implements ActionListener
     {
         if (e.getSource() == controlButtons[0])
         {// step button
-            run = false;
-            game.step();
-            update();
+            stepGrid();
         }
         else if (e.getSource() == controlButtons[1])
         {// start thread
-            run = !run;
-            if (run)
-            {
-                controlButtons[1].setText("⏸");
-                startRun();
-            }
-            else
-            {
-                controlButtons[1].setText("⏵");
-            }
+            runGrid();
         }
         else if (e.getSource() == controlButtons[2])
         {//clear button
-            run = false;
-            game.clearGrid();
-            update();
+            clearProcedure();
         }
         else if (e.getSource() == controlButtons[3])
         {// increase delay (decrease speed)
-            speed += 10;
-            label.setText(String.format("Delay: %s", delay * speed));
+            decreaseSpeed();
         }
         else if (e.getSource() == controlButtons[4])
         {// decrease delay (increase speed)
-            speed -= 1;
-            label.setText(String.format("Delay: %s", delay * speed));
+            increaseSpeed();
         }
         else if (e.getSource() == controlButtons[5])
         {// reset speed
-            speed = 10;
-            label.setText(String.format("Delay: %s", delay * speed));
+            resetSpeed();
         }
         else if (e.getSource() == controlButtons[6])
         {// randomise grid
             RandomiseGrid();
-            update();
+
         }
         else
+            updateGrid(e);
+    }
+
+    private static void updateGrid(ActionEvent e)
+    {
+        for (int row = 0; row < size; row++)
         {
-            for (int row = 0; row < size; row++)
+            for (int col = 0; col < size; col++)
             {
-                for (int col = 0; col < size; col++)
+                if (e.getSource() == grid[row][col])
                 {
-                    if (e.getSource() == grid[row][col])
+                    if (!game.getGrid()[row][col])
                     {
-                        if (!game.getGrid()[row][col])
-                        {
-                            game.tick(row, col);
-                        }
-                        else
-                        {
-                            game.unTick(row, col);
-                        }
-                        update();
+                        game.tick(row, col);
                     }
+                    else
+                    {
+                        game.unTick(row, col);
+                    }
+                    update();
                 }
             }
         }
+    }
+
+    private void resetSpeed()
+    {
+        speed = 5;
+        label.setText(String.format("Speed: %s", speed));
+    }
+
+    private void increaseSpeed()
+    {
+        if (speed < speeds.length)
+        {
+            speed += 1;
+        }
+        label.setText(String.format("Speed: %s", speed));
+    }
+
+    private void decreaseSpeed()
+    {
+        if (speed > 0)
+        {
+            speed -= 1;
+        }
+        label.setText(String.format("Speed: %s", speed));
+    }
+
+    private void clearProcedure()
+    {
+        run = false;
+        game.clearGrid();
+        update();
+        controlButtons[1].setText("⏯");
+    }
+
+    private void runGrid()
+    {
+        run = !run;
+        if (run)
+        {
+            controlButtons[1].setText("⏸");
+            startRun();
+        }
+        else
+        {
+            controlButtons[1].setText("⏵");
+        }
+    }
+
+    private static void stepGrid()
+    {
+        run = false;
+        game.step();
+        update();
     }
 
     private static void RandomiseGrid()
@@ -190,6 +231,7 @@ public class golVisuals extends JFrame implements ActionListener
                 }
             }
         }
+        update();
     }
 
     private static int getRandom()
@@ -214,7 +256,7 @@ public class golVisuals extends JFrame implements ActionListener
                 update();
                 try
                 {
-                    Thread.sleep((long) delay * speed);
+                    Thread.sleep(speeds[speed]);
                 } catch (Exception ignore)
                 {
                 }

@@ -18,7 +18,7 @@ class golGrid
             for (int col = 0; col < size; col++)
             {
                 oldGrid[row][col] = false;
-                newGrid[row][col] = false;
+
             }
         }
     }
@@ -26,13 +26,11 @@ class golGrid
     public void tick(int row, int col)
     {
         oldGrid[row][col] = true;
-        newGrid[row][col] = true;
     }
 
     public void unTick(int row, int col)
     {
         oldGrid[row][col] = false;
-        newGrid[row][col] = true;
     }
 
     @Override
@@ -53,7 +51,6 @@ class golGrid
             for (int j = 0; j < size; j++)
             {
                 oldGrid[i][j] = false;
-                newGrid[i][j] = false;
             }
         }
     }
@@ -100,7 +97,7 @@ class golGrid
     }
 
     private void mutate(int live, int row, int col, boolean state)
-    {// mutates the cell according to Conways GOL rules
+    {// mutates the cell according to Conways GOL rules in a new grid
         if (state)
         {
             if (live != 2 && 3 != live)
