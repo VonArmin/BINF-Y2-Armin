@@ -1,8 +1,7 @@
 package Blok6.Afvinkopgave2;
 
-import org.w3c.dom.ls.LSOutput;
-
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +9,11 @@ import java.util.Random;
 
 public class GOLvisuals extends JFrame implements ActionListener
 {
+
+    private static final Color backgroundCol = new Color(65, 65, 65);
+    private static final Color foregroundCol = new Color(180, 180, 180);
+    private static final Border borderStyle = BorderFactory.createLineBorder(Color.BLACK);
+    private static final Dimension buttonSize = new Dimension(70, 30);
     private static int size = 150;
     private static int scale = 5;
     private static boolean run = false;
@@ -20,26 +24,16 @@ public class GOLvisuals extends JFrame implements ActionListener
     private static JPanel panel = new JPanel();
     private static GOLvisuals frame = new GOLvisuals();
     private static JButton[][] grid = new JButton[size][size];
-
-
-    private JButton startbutton = new JButton(">>");
-    private JButton step = new JButton(">");
-    private JButton clear = new JButton("x");
-    private JButton increase = new JButton("slow down");
-    private JButton decrease = new JButton("faster");
-    private JButton setdelay = new JButton("reset speed");
-    private JButton randomise = new JButton("R");
-
+    private JButton[] Controlbuttons = new JButton[7];
     private JLabel label = new JLabel();
-
-
     public static void main(String[] args)
     {
-        frame.setSize(size * scale + scale, size * scale + 80);
+        frame.setSize(size * scale + 30, size * scale + 80);
         frame.setTitle("GOL visuals app");
         GOLgrid game = new GOLgrid(size);
         frame.myGui();
         frame.setVisible(true);
+
     }
 
     private void myGui()
@@ -47,25 +41,14 @@ public class GOLvisuals extends JFrame implements ActionListener
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         Container window = getContentPane();
 
-        step.setBackground(new Color(6, 112, 39));
-        startbutton.setBackground(new Color(14, 173, 64));
-        clear.setBackground(new Color(158, 8, 5));
-        clear.setForeground(Color.white);
-        randomise.setBackground(new Color(14, 93, 173));
-        randomise.setForeground(Color.white);
-
-        clear.addActionListener(this);
-        startbutton.addActionListener(this);
-        step.addActionListener(this);
-        increase.addActionListener(this);
-        decrease.addActionListener(this);
-        setdelay.addActionListener(this);
-        randomise.addActionListener(this);
+        FormatButtons();
 
         window.setLayout(new FlowLayout());
         panel.setLayout(new GridLayout(size, size));
+        window.setBackground(new Color(35, 35, 35));
         panel.setPreferredSize(new Dimension(size * (scale), size * (scale)));
         panel.setVisible(true);
+        label.setForeground(foregroundCol);
         label.setText(String.format("Delay: %s", delay * speed));
 
 
@@ -74,22 +57,35 @@ public class GOLvisuals extends JFrame implements ActionListener
             for (int col = 0; col < size; col++)
             {
                 grid[row][col] = new JButton();
-                grid[row][col].setBackground(Color.white);
+                grid[row][col].setBorderPainted(false);
+                grid[row][col].setBackground(backgroundCol);
                 panel.add(grid[row][col]);
                 grid[row][col].addActionListener(this);
             }
         }
 
         window.add(panel);
-        window.add(step);
-        window.add(startbutton);
-        window.add(clear);
-        window.add(decrease);
-        window.add(increase);
-        window.add(setdelay);
+        for (JButton jbutton : Controlbuttons)
+        {
+            window.add(jbutton);
+        }
         window.add(label);
-        window.add(randomise);
 
+    }
+
+    private void FormatButtons()
+    {
+        String[] buttonNames = {"⏯", "⏭", "⏏", "⏪", "⏩", "⏴", "⏺"};
+        for (int i = 0; i < Controlbuttons.length; i++)
+        {
+            Controlbuttons[i] = new JButton();
+            Controlbuttons[i].addActionListener(this);
+            Controlbuttons[i].setBackground(backgroundCol);
+            Controlbuttons[i].setForeground(foregroundCol);
+            Controlbuttons[i].setBorder(borderStyle);
+            Controlbuttons[i].setPreferredSize(buttonSize);
+            Controlbuttons[i].setText(buttonNames[i]);
+        }
     }
 
     private static void update()
@@ -101,11 +97,11 @@ public class GOLvisuals extends JFrame implements ActionListener
             {
                 if (currGrid[i][j])
                 {
-                    grid[i][j].setBackground(Color.black);
+                    grid[i][j].setBackground(foregroundCol);
                 }
                 else
                 {
-                    grid[i][j].setBackground(Color.white);
+                    grid[i][j].setBackground(backgroundCol);
                 }
             }
         }
@@ -114,39 +110,48 @@ public class GOLvisuals extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        if (e.getSource() == step)
+        if (e.getSource() == Controlbuttons[0])
         {
             run = false;
             GOLgrid.step();
             update();
         }
-        else if (e.getSource() == startbutton)
+        else if (e.getSource() == Controlbuttons[1])
         {
             run = !run;
-            startrun();
+            if (run)
+            {
+                Controlbuttons[1].setText("⏸");
+                startrun();
+            }
+            else
+            {
+                Controlbuttons[1].setText("⏵");
+            }
+
         }
-        else if (e.getSource() == clear)
+        else if (e.getSource() == Controlbuttons[2])
         {
             run = false;
             GOLgrid.clearGrid();
             update();
         }
-        else if (e.getSource() == increase)
+        else if (e.getSource() == Controlbuttons[3])
         {
             speed += 10;
             label.setText(String.format("Delay: %s", delay * speed));
         }
-        else if (e.getSource() == decrease)
+        else if (e.getSource() == Controlbuttons[4])
         {
             speed -= 1;
             label.setText(String.format("Delay: %s", delay * speed));
         }
-        else if (e.getSource() == setdelay)
+        else if (e.getSource() == Controlbuttons[5])
         {
             speed = 10;
             label.setText(String.format("Delay: %s", delay * speed));
         }
-        else if (e.getSource() == randomise)
+        else if (e.getSource() == Controlbuttons[6])
         {
             RandomiseGrid();
             update();
@@ -203,23 +208,23 @@ public class GOLvisuals extends JFrame implements ActionListener
         thread1.start();
     }
 
-    static class gridLoop extends Thread
+static class gridLoop extends Thread
+{
+    @Override
+    public void run()
     {
-        @Override
-        public void run()
+        while (GOLvisuals.run)
         {
-            while (GOLvisuals.run)
+            GOLgrid.step();
+            GOLvisuals.update();
+            try
             {
-                GOLgrid.step();
-                GOLvisuals.update();
-                try
-                {
-                    Thread.sleep(delay * speed);
-                } catch (Exception ignore)
-                {
+                Thread.sleep(delay * speed);
+            } catch (Exception ignore)
+            {
 
-                }
             }
         }
     }
+}
 }
