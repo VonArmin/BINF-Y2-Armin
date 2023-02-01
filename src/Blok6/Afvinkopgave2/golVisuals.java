@@ -7,10 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
-public class GOLvisuals extends JFrame implements ActionListener
+public class golVisuals extends JFrame implements ActionListener
 {
     private static final Color backgroundCol = new Color(65, 65, 65);
-    private static final Color foregroundCol = new Color(180, 180, 180);
+    private static final Color foregroundCol = new Color(200, 200, 200);
     private static final Border borderStyle = BorderFactory.createLineBorder(Color.BLACK);
     private static final Dimension buttonSize = new Dimension(50, 25);
     private static final int size = 150;
@@ -18,17 +18,18 @@ public class GOLvisuals extends JFrame implements ActionListener
     private static boolean run = false;
     private static final int delay = 10;
     private static int speed = 10;
-    private static final JPanel GOLgridPanel = new JPanel();
-    private static final GOLvisuals frame = new GOLvisuals();
+    private static final JPanel GOLGridPanel = new JPanel();
+    private static final golVisuals frame = new golVisuals();
+    private static final golGrid game = new golGrid(size);
     private static final JButton[][] grid = new JButton[size][size];
-    private final JButton[] Controlbuttons = new JButton[7];
+    private final JButton[] controlButtons = new JButton[7];
     private final JLabel label = new JLabel();
 
     public static void main(String[] args)
     {
         frame.setSize(size * scale + 30, size * scale + 80);
         frame.setTitle("GOL visuals app");
-        GOLgrid game = new GOLgrid(size);
+
         frame.myGui();
         frame.setVisible(true);
     }
@@ -41,10 +42,10 @@ public class GOLvisuals extends JFrame implements ActionListener
         FormatButtons();
 
         window.setLayout(new FlowLayout());
-        GOLgridPanel.setLayout(new GridLayout(size, size));
+        GOLGridPanel.setLayout(new GridLayout(size, size));
         window.setBackground(new Color(35, 35, 35));
-        GOLgridPanel.setPreferredSize(new Dimension(size * (scale), size * (scale)));
-        GOLgridPanel.setVisible(true);
+        GOLGridPanel.setPreferredSize(new Dimension(size * (scale), size * (scale)));
+        GOLGridPanel.setVisible(true);
         label.setForeground(foregroundCol);
         label.setText(String.format("Delay: %s", delay * speed));
 
@@ -55,13 +56,13 @@ public class GOLvisuals extends JFrame implements ActionListener
                 grid[row][col] = new JButton();
                 grid[row][col].setBorderPainted(false);
                 grid[row][col].setBackground(backgroundCol);
-                GOLgridPanel.add(grid[row][col]);
+                GOLGridPanel.add(grid[row][col]);
                 grid[row][col].addActionListener(this);
             }
         }
 
-        window.add(GOLgridPanel);
-        for (JButton jbutton : Controlbuttons)
+        window.add(GOLGridPanel);
+        for (JButton jbutton : controlButtons)
         {
             window.add(jbutton);
         }
@@ -71,21 +72,21 @@ public class GOLvisuals extends JFrame implements ActionListener
     private void FormatButtons()
     {
         String[] buttonNames = {"⏯", "⏭", "⏏", "⏪", "⏩", "⏴", "⏺"};
-        for (int i = 0; i < Controlbuttons.length; i++)
+        for (int i = 0; i < controlButtons.length; i++)
         {
-            Controlbuttons[i] = new JButton();
-            Controlbuttons[i].addActionListener(this);
-            Controlbuttons[i].setBackground(backgroundCol);
-            Controlbuttons[i].setForeground(foregroundCol);
-            Controlbuttons[i].setBorder(borderStyle);
-            Controlbuttons[i].setPreferredSize(buttonSize);
-            Controlbuttons[i].setText(buttonNames[i]);
+            controlButtons[i] = new JButton();
+            controlButtons[i].addActionListener(this);
+            controlButtons[i].setBackground(backgroundCol);
+            controlButtons[i].setForeground(foregroundCol);
+            controlButtons[i].setBorder(borderStyle);
+            controlButtons[i].setPreferredSize(buttonSize);
+            controlButtons[i].setText(buttonNames[i]);
         }
     }
 
     private static void update()
     {
-        boolean[][] currGrid = GOLgrid.getGrid();
+        boolean[][] currGrid = game.getGrid();
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
@@ -105,47 +106,47 @@ public class GOLvisuals extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        if (e.getSource() == Controlbuttons[0])
+        if (e.getSource() == controlButtons[0])
         {// step button
             run = false;
-            GOLgrid.step();
+            game.step();
             update();
         }
-        else if (e.getSource() == Controlbuttons[1])
+        else if (e.getSource() == controlButtons[1])
         {// start thread
             run = !run;
             if (run)
             {
-                Controlbuttons[1].setText("⏸");
-                startrun();
+                controlButtons[1].setText("⏸");
+                startRun();
             }
             else
             {
-                Controlbuttons[1].setText("⏵");
+                controlButtons[1].setText("⏵");
             }
         }
-        else if (e.getSource() == Controlbuttons[2])
+        else if (e.getSource() == controlButtons[2])
         {//clear button
             run = false;
-            GOLgrid.clearGrid();
+            game.clearGrid();
             update();
         }
-        else if (e.getSource() == Controlbuttons[3])
+        else if (e.getSource() == controlButtons[3])
         {// increase delay (decrease speed)
             speed += 10;
             label.setText(String.format("Delay: %s", delay * speed));
         }
-        else if (e.getSource() == Controlbuttons[4])
+        else if (e.getSource() == controlButtons[4])
         {// decrease delay (increase speed)
             speed -= 1;
             label.setText(String.format("Delay: %s", delay * speed));
         }
-        else if (e.getSource() == Controlbuttons[5])
+        else if (e.getSource() == controlButtons[5])
         {// reset speed
             speed = 10;
             label.setText(String.format("Delay: %s", delay * speed));
         }
-        else if (e.getSource() == Controlbuttons[6])
+        else if (e.getSource() == controlButtons[6])
         {// randomise grid
             RandomiseGrid();
             update();
@@ -158,13 +159,13 @@ public class GOLvisuals extends JFrame implements ActionListener
                 {
                     if (e.getSource() == grid[row][col])
                     {
-                        if (!GOLgrid.getGrid()[row][col])
+                        if (!game.getGrid()[row][col])
                         {
-                            GOLgrid.tick(row, col);
+                            game.tick(row, col);
                         }
                         else
                         {
-                            GOLgrid.untick(row, col);
+                            game.unTick(row, col);
                         }
                         update();
                     }
@@ -181,11 +182,11 @@ public class GOLvisuals extends JFrame implements ActionListener
             {
                 if (getRandom() == 1)
                 {
-                    GOLgrid.tick(row, col);
+                    game.tick(row, col);
                 }
                 else
                 {
-                    GOLgrid.untick(row, col);
+                    game.unTick(row, col);
                 }
             }
         }
@@ -196,7 +197,7 @@ public class GOLvisuals extends JFrame implements ActionListener
         return new Random().nextInt(2);
     }
 
-    private static void startrun()
+    private static void startRun()
     {
         gridLoop thread1 = new gridLoop();
         thread1.start();
@@ -207,13 +208,13 @@ public class GOLvisuals extends JFrame implements ActionListener
         @Override
         public void run()
         {
-            while (GOLvisuals.run)
+            while (run)
             {
-                GOLgrid.step();
-                GOLvisuals.update();
+                game.step();
+                update();
                 try
                 {
-                    Thread.sleep(delay * speed);
+                    Thread.sleep((long) delay * speed);
                 } catch (Exception ignore)
                 {
                 }

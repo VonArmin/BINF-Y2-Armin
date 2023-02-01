@@ -2,89 +2,88 @@ package Blok6.Afvinkopgave2;
 
 import java.util.Arrays;
 
-class GOLgrid
+class golGrid
 {
     private static int size;
-    private static boolean[][] oldgrid;
-    private static boolean[][] newgrid;
+    private final boolean[][] oldGrid;
+    private final boolean[][] newGrid;
 
-    GOLgrid(int size)
+    public golGrid(int size)
     {
-        GOLgrid.size = size;
-        oldgrid = new boolean[size][size];
-        newgrid = new boolean[size][size];
+        golGrid.size = size;
+        oldGrid = new boolean[size][size];
+        newGrid = new boolean[size][size];
         for (int row = 0; row < size; row++)
         {
             for (int col = 0; col < size; col++)
             {
-                oldgrid[row][col] = false;
-                newgrid[row][col] = false;
+                oldGrid[row][col] = false;
+                newGrid[row][col] = false;
             }
         }
     }
 
-    static void tick(int row, int col)
+    public void tick(int row, int col)
     {
-        oldgrid[row][col] = true;
-        newgrid[row][col] = true;
+        oldGrid[row][col] = true;
+        newGrid[row][col] = true;
     }
 
-    static void untick(int row, int col)
+    public void unTick(int row, int col)
     {
-        oldgrid[row][col] = false;
-        newgrid[row][col] = true;
-
+        oldGrid[row][col] = false;
+        newGrid[row][col] = true;
     }
 
     @Override
     public String toString()
     {
-        return Arrays.deepToString(oldgrid);
+        return Arrays.deepToString(oldGrid);
     }
 
-    static boolean[][] getGrid()
+    public boolean[][] getGrid()
     {
-        return oldgrid;
+        return oldGrid;
     }
 
-    static void clearGrid()
+    public void clearGrid()
     {
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
-                oldgrid[i][j] = false;
-                newgrid[i][j] = false;
+                oldGrid[i][j] = false;
+                newGrid[i][j] = false;
             }
         }
     }
 
-    static void step()
-    {
+    public void step()
+    {// steps current state of the grid to the next
         for (int row = 0; row < size; row++)
         {
             for (int col = 0; col < size; col++)
             {
-                livecells(row, col);
+                liveCells(row, col);
             }
         }
         for (int row = 0; row < size; row++)
         {
-            System.arraycopy(newgrid[row], 0, oldgrid[row], 0, size);
+            System.arraycopy(newGrid[row], 0, oldGrid[row], 0, size);
         }
     }
 
-    private static void livecells(int row, int col)
-    {
+    private void liveCells(int row, int col)
+    {// fetches live neighbouring cells
         int live = 0;
-        boolean state = oldgrid[row][col];
+        boolean state = oldGrid[row][col];
         for (int i = -1; i < 2; i++)
         {
             for (int j = -1; j < 2; j++)
             {
                 try
                 {
-                    if (oldgrid[(row + i)][(col + j)])
+                    if (oldGrid[(row + i)][(col + j)])
                     {
                         live++;
                     }
@@ -100,18 +99,18 @@ class GOLgrid
         mutate(live, row, col, state);
     }
 
-    private static void mutate(int live, int row, int col, boolean state)
-    {
+    private void mutate(int live, int row, int col, boolean state)
+    {// mutates the cell according to Conways GOL rules
         if (state)
         {
             if (live != 2 && 3 != live)
             {
-                newgrid[row][col] = false;
+                newGrid[row][col] = false;
             }
         }
         else if (live == 3)
         {
-            newgrid[row][col] = true;
+            newGrid[row][col] = true;
         }
     }
 }
