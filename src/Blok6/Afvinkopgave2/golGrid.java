@@ -18,30 +18,25 @@ class golGrid
             for (int col = 0; col < size; col++)
             {
                 oldGrid[row][col] = false;
-
             }
         }
     }
 
     public void tick(int row, int col)
     {
-        oldGrid[row][col] = true;
+        oldGrid[row][col] = !oldGrid[row][col];
     }
 
-    public void unTick(int row, int col)
+
+    public boolean[][] getGrid()
     {
-        oldGrid[row][col] = false;
+        return oldGrid;
     }
 
     @Override
     public String toString()
     {
         return Arrays.deepToString(oldGrid);
-    }
-
-    public boolean[][] getGrid()
-    {
-        return oldGrid;
     }
 
     public void clearGrid()

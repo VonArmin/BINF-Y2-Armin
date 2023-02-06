@@ -13,11 +13,11 @@ public class golVisuals extends JFrame implements ActionListener
     private static final Color foregroundCol = new Color(200, 200, 200);
     private static final Border borderStyle = BorderFactory.createLineBorder(Color.BLACK);
     private static final Dimension buttonSize = new Dimension(50, 25);
-    private static final int size = 100;
-    private static final int scale = 6;
+    private static final int size = 125;
+    private static final int scale = 5;
     private static boolean run = false;
     private static int speed = 5;
-    private static final int[] speeds = {275, 225, 175, 125, 100, 80, 60, 40, 25, 10};
+    private static final int[] speeds = {275, 225, 175, 125, 100, 80, 60, 45, 30, 20};
     private static final JPanel GOLGridPanel = new JPanel();
     private static final golVisuals frame = new golVisuals();
     private static final golGrid game = new golGrid(size);
@@ -47,7 +47,6 @@ public class golVisuals extends JFrame implements ActionListener
         GOLGridPanel.setVisible(true);
         label.setForeground(foregroundCol);
         label.setText(String.format("Speed: %s", speed));
-
         for (int row = 0; row < size; row++)
         {
             for (int col = 0; col < size; col++)
@@ -80,8 +79,11 @@ public class golVisuals extends JFrame implements ActionListener
             controlButtons[i].setBorder(borderStyle);
             controlButtons[i].setPreferredSize(buttonSize);
             controlButtons[i].setText(buttonNames[i]);
-            controlButtons[i].setFont(new Font(controlButtons[i].getFont().getName(),
-                    controlButtons[i].getFont().getStyle(), 20));
+            controlButtons[i].setFont(
+                    new Font(
+                            controlButtons[i].getFont().getName(),
+                            controlButtons[i].getFont().getStyle(),
+                            20));
         }
     }
 
@@ -134,7 +136,6 @@ public class golVisuals extends JFrame implements ActionListener
         else if (e.getSource() == controlButtons[6])
         {// randomise grid
             RandomiseGrid();
-
         }
         else
             updateGrid(e);
@@ -148,14 +149,7 @@ public class golVisuals extends JFrame implements ActionListener
             {
                 if (e.getSource() == grid[row][col])
                 {
-                    if (!game.getGrid()[row][col])
-                    {
-                        game.tick(row, col);
-                    }
-                    else
-                    {
-                        game.unTick(row, col);
-                    }
+                    game.tick(row, col);
                     update();
                 }
             }
@@ -217,6 +211,7 @@ public class golVisuals extends JFrame implements ActionListener
 
     private static void RandomiseGrid()
     {
+        game.clearGrid();
         for (int row = 0; row < size; row++)
         {
             for (int col = 0; col < size; col++)
@@ -225,10 +220,6 @@ public class golVisuals extends JFrame implements ActionListener
                 {
                     game.tick(row, col);
                 }
-                else
-                {
-                    game.unTick(row, col);
-                }
             }
         }
         update();
@@ -236,7 +227,7 @@ public class golVisuals extends JFrame implements ActionListener
 
     private static int getRandom()
     {
-        return new Random().nextInt(2);
+        return new Random().nextInt(3);
     }
 
     private static void startRun()
@@ -252,13 +243,20 @@ public class golVisuals extends JFrame implements ActionListener
         {
             while (run)
             {
+                long currtime = System.nanoTime();
                 game.step();
+                System.out.print("backend: ");
+                System.out.print((System.nanoTime() - currtime )/1000);
+                currtime = System.nanoTime();
                 update();
+                System.out.print(", frontend: ");
+                System.out.println((System.nanoTime() - currtime )/1000);
                 try
                 {
                     Thread.sleep(speeds[speed]);
                 } catch (Exception ignore)
                 {
+
                 }
             }
         }
